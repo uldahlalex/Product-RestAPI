@@ -1,4 +1,6 @@
-﻿using Entities;
+﻿using API.DTOs;
+using AutoMapper;
+using Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +13,11 @@ public class ProductController : ControllerBase
 
     private ProductRepository _productRepository;
     private ProductValidator _productValidator;
+    private readonly IMapper _mapper;
     
-    public ProductController(ProductRepository repository)
+    public ProductController(ProductRepository repository, IMapper mapper)
     {
+        _mapper = mapper;
         _productRepository = repository;
         _productValidator = new ProductValidator();
     }
@@ -25,12 +29,13 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult CreateNewProduct(Product product)
+    public ActionResult CreateNewProduct(PostProductDTO dto)
     {
-        var validation = _productValidator.Validate(product);
+        var validation = _productValidator.Validate(dto);
+        Product prod = _mapper.Map<Product>(dto);
         if (validation.IsValid)
         {
-            return Ok(_productRepository.InsertProduct(product));
+            return Ok(_productRepository.InsertProduct(prod));
         }
         return BadRequest(validation.ToString());
     }

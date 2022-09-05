@@ -1,3 +1,6 @@
+using API.DTOs;
+using AutoMapper;
+using Entities;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +12,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Making a mapper configuration
+var config = new MapperConfiguration(cfg =>
+{
+    cfg.CreateMap<PostProductDTO, Product>();
+});
+
+var mapper = config.CreateMapper();
+
+builder.Services.AddSingleton(mapper);
 builder.Services.AddDbContext<ProductDbContext>(options => options.UseSqlite(
         "Data source=db.db"
     ));

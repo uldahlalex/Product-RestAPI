@@ -1,9 +1,10 @@
-﻿using Entities;
+﻿using API.DTOs;
+using Entities;
 using FluentValidation;
 
 namespace API;
 
-public class ProductValidator : AbstractValidator<Product>
+public class ProductValidator : AbstractValidator<PostProductDTO>
 {
     public ProductValidator()
     {
