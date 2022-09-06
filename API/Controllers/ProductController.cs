@@ -12,14 +12,12 @@ public class ProductController : ControllerBase
 {
 
     private ProductRepository _productRepository;
-    private ProductValidator _productValidator;
     private readonly IMapper _mapper;
     
     public ProductController(ProductRepository repository, IMapper mapper)
     {
         _mapper = mapper;
         _productRepository = repository;
-        _productValidator = new ProductValidator();
     }
 
     [HttpGet]
@@ -31,11 +29,12 @@ public class ProductController : ControllerBase
     [HttpPost]
     public ActionResult CreateNewProduct(PostProductDTO dto)
     {
-        var validation = _productValidator.Validate(dto);
-        Product prod = _mapper.Map<Product>(dto);
+        ProductValidator validator = new ProductValidator();
+        var validation = validator.Validate(dto);
         if (validation.IsValid)
         {
-            return Ok(_productRepository.InsertProduct(prod));
+            Product product = _mapper.Map<Product>(dto);
+            return Ok(_productRepository.InsertProduct(product));
         }
         return BadRequest(validation.ToString());
     }
